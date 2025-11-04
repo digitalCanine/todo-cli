@@ -18,10 +18,10 @@ Supports flexible commands, task management, and automatic saving.
 ---
 
 ## Installation
-Clone the repository:
 ```bash
 git clone https://github.com/digitalCanine/todo-cli.git
 cd todo-cli/src
+javac Main.java
 ```
 
 To launch, simply use the command ```java Main.java``` in the ```src``` folder.

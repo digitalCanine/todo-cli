@@ -12,16 +12,19 @@ public class Main {
     private static String COLOR_CURSOR, COLOR_BOX_PENDING, COLOR_BOX_DONE, COLOR_X_DONE;
     private static String COLOR_SUCCESS, COLOR_ERROR, COLOR_WARNING, COLOR_RESET;
     private static String MSG_ADDED, MSG_REMOVED, MSG_DONE, MSG_INVALID_TASK_NUMBER;
-    private static String MSG_NO_TASKS, MSG_ALL_REMOVED, MSG_MISSING_TASK_DESC, MSG_MISSING_TASK_NUM;
+    private static String MSG_NO_TASKS, MSG_ALL_REMOVED, MSG_MISSING_TASK_DESC, MSG_MISSING_TASK_NUM, MSG_WELCOME, MSG_WELCOME_HELP;
 
     private static final String FILE = "tasks.txt";
     private static List<Task> tasks = new ArrayList<>();
 
     public static void main(String[] args) {
-        System.out.println(COLOR_BOX_DONE + "Welcome to Todo CLI!" + COLOR_RESET + "\nType 'help' to see available commands.");
+
         loadConfig();   // load config properties
         loadTasks();    // load tasks
-
+        
+        System.out.println(COLOR_BOX_DONE + MSG_WELCOME + COLOR_RESET);
+        System.out.println(COLOR_BOX_PENDING + MSG_WELCOME_HELP + COLOR_RESET);
+        
         Scanner sc = new Scanner(System.in);
 
         try {
@@ -109,7 +112,7 @@ private static void loadConfig() {
         // Load properties from that path
         config.load(new FileReader(configPath));
 
-        // --- rest of your existing code loading commands, colors, messages ---
+        // Load command aliases
         commands.put("add", Arrays.asList(config.getProperty("cmd_add", "add").split(",")));
         commands.put("remove", Arrays.asList(config.getProperty("cmd_remove", "remove").split(",")));
         commands.put("done", Arrays.asList(config.getProperty("cmd_done", "done").split(",")));
@@ -138,7 +141,9 @@ private static void loadConfig() {
         MSG_ALL_REMOVED = config.getProperty("msg_all_removed", "All tasks have been removed!");
         MSG_MISSING_TASK_DESC = config.getProperty("msg_missing_task_description", "Please provide a task description.");
         MSG_MISSING_TASK_NUM = config.getProperty("msg_missing_task_number", "Please provide a task number.");
-
+        MSG_WELCOME = config.getProperty("msg_welcome", "Welcome to Todo CLI!");
+        MSG_WELCOME_HELP = config.getProperty("msg_welcome_help", "Type 'help' to see available commands.");
+        
     } catch (IOException | URISyntaxException e) {
         System.out.println("Could not load config.properties, using defaults.");
     }
