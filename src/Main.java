@@ -18,6 +18,7 @@ public class Main {
     private static List<Task> tasks = new ArrayList<>();
 
     public static void main(String[] args) {
+        System.out.println(COLOR_BOX_DONE + "Welcome to Todo CLI!" + COLOR_RESET + "\nType 'help' to see available commands.");
         loadConfig();   // load config properties
         loadTasks();    // load tasks
 
@@ -66,6 +67,8 @@ public class Main {
                     } else if (isCommand(cmd, "clear")) {
                         System.out.print("\033[H\033[2J");
                         System.out.flush();
+                    } else if (isCommand(cmd, "help")) {
+                        showHelp();
                     } else {
                         System.out.println("Commands: add, remove, done, list, wipe, clear, exit");
                     }
@@ -114,6 +117,7 @@ private static void loadConfig() {
         commands.put("wipe", Arrays.asList(config.getProperty("cmd_wipe", "wipe").split(",")));
         commands.put("exit", Arrays.asList(config.getProperty("cmd_exit", "exit").split(",")));
         commands.put("clear", Arrays.asList(config.getProperty("cmd_clear", "clear").split(",")));
+        commands.put("help", Arrays.asList(config.getProperty("cmd_help", "help").split(",")));
 
         // Load colors
         COLOR_CURSOR = config.getProperty("color_cursor", "\u001B[95m");
@@ -221,6 +225,19 @@ private static void loadConfig() {
             }
         } catch (IOException e) {
             System.out.println(COLOR_ERROR + "Error saving tasks" + COLOR_RESET);
+        }
+    }
+
+    private static void showHelp() {
+        System.out.println("Available commands:");
+        for (Map.Entry<String, List<String>> entry : commands.entrySet()) {
+            String mainCmd = entry.getValue().get(0); // first alias
+            List<String> aliases = entry.getValue().subList(1, entry.getValue().size()); // rest of aliases
+            if (!aliases.isEmpty()) {
+                System.out.println(mainCmd + " " + aliases.stream().map(a -> "[" + a + "]").reduce("", (a, b) -> a + " " + b));
+            } else {
+                System.out.println(mainCmd);
+            }
         }
     }
 }
