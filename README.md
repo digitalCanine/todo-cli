@@ -23,6 +23,8 @@ git clone https://github.com/digitalCanine/todo-cli.git
 cd todo-cli/src
 ```
 
+To launch, simply use the command ```java Main.java''' in the '''src''' folder.
+
 ---
 ## Note
 It is reccomended that you assign an alias via your prefered shell for easier access to the todo list.
