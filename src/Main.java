@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.net.URISyntaxException;
 
 public class Main {
 
@@ -66,7 +67,7 @@ public class Main {
                         System.out.print("\033[H\033[2J");
                         System.out.flush();
                     } else {
-                        System.out.println("Commands: add, remove, done, list, wipe, exit");
+                        System.out.println("Commands: add, remove, done, list, wipe, clear, exit");
                     }
 
                 } catch (Exception e) {
@@ -92,43 +93,53 @@ public class Main {
     // =========================
     // Load configuration
     // =========================
-    private static void loadConfig() {
-        try (FileReader reader = new FileReader("config.properties")) {
-            config.load(reader);
+private static void loadConfig() {
+    try {
+        // Get the folder where the Main.class file is located
+        String configPath = new File(Main.class
+                                .getProtectionDomain()
+                                .getCodeSource()
+                                .getLocation()
+                                .toURI())
+                                .getParent() + "/config.properties";
 
-            // Load commands
-            commands.put("add", Arrays.asList(config.getProperty("cmd_add", "add").split(",")));
-            commands.put("remove", Arrays.asList(config.getProperty("cmd_remove", "remove").split(",")));
-            commands.put("done", Arrays.asList(config.getProperty("cmd_done", "done").split(",")));
-            commands.put("list", Arrays.asList(config.getProperty("cmd_list", "list").split(",")));
-            commands.put("wipe", Arrays.asList(config.getProperty("cmd_wipe", "wipe").split(",")));
-            commands.put("exit", Arrays.asList(config.getProperty("cmd_exit", "exit").split(",")));
-            commands.put("clear", Arrays.asList(config.getProperty("cmd_clear", "clear").split(",")));
+        // Load properties from that path
+        config.load(new FileReader(configPath));
 
-            // Load colors
-            COLOR_CURSOR = config.getProperty("color_cursor", "\u001B[95m");
-            COLOR_BOX_PENDING = config.getProperty("color_box_pending", "\u001B[94m");
-            COLOR_BOX_DONE = config.getProperty("color_box_done", "\u001B[92m");
-            COLOR_X_DONE = config.getProperty("color_x_done", "\u001B[95m");
-            COLOR_SUCCESS = config.getProperty("color_success", "\u001B[32m");
-            COLOR_ERROR = config.getProperty("color_error", "\u001B[31m");
-            COLOR_WARNING = config.getProperty("color_warning", "\u001B[33m");
-            COLOR_RESET = config.getProperty("color_reset", "\u001B[0m");
+        // --- rest of your existing code loading commands, colors, messages ---
+        commands.put("add", Arrays.asList(config.getProperty("cmd_add", "add").split(",")));
+        commands.put("remove", Arrays.asList(config.getProperty("cmd_remove", "remove").split(",")));
+        commands.put("done", Arrays.asList(config.getProperty("cmd_done", "done").split(",")));
+        commands.put("list", Arrays.asList(config.getProperty("cmd_list", "list").split(",")));
+        commands.put("wipe", Arrays.asList(config.getProperty("cmd_wipe", "wipe").split(",")));
+        commands.put("exit", Arrays.asList(config.getProperty("cmd_exit", "exit").split(",")));
+        commands.put("clear", Arrays.asList(config.getProperty("cmd_clear", "clear").split(",")));
 
-            // Load messages
-            MSG_ADDED = config.getProperty("msg_added", "Added: %s");
-            MSG_REMOVED = config.getProperty("msg_removed", "Removed: %s");
-            MSG_DONE = config.getProperty("msg_done", "Marked done: %s");
-            MSG_INVALID_TASK_NUMBER = config.getProperty("msg_invalid_task_number", "Invalid task number");
-            MSG_NO_TASKS = config.getProperty("msg_no_tasks", "No tasks!");
-            MSG_ALL_REMOVED = config.getProperty("msg_all_removed", "All tasks have been removed!");
-            MSG_MISSING_TASK_DESC = config.getProperty("msg_missing_task_description", "Please provide a task description.");
-            MSG_MISSING_TASK_NUM = config.getProperty("msg_missing_task_number", "Please provide a task number.");
+        // Load colors
+        COLOR_CURSOR = config.getProperty("color_cursor", "\u001B[95m");
+        COLOR_BOX_PENDING = config.getProperty("color_box_pending", "\u001B[94m");
+        COLOR_BOX_DONE = config.getProperty("color_box_done", "\u001B[92m");
+        COLOR_X_DONE = config.getProperty("color_x_done", "\u001B[95m");
+        COLOR_SUCCESS = config.getProperty("color_success", "\u001B[32m");
+        COLOR_ERROR = config.getProperty("color_error", "\u001B[31m");
+        COLOR_WARNING = config.getProperty("color_warning", "\u001B[33m");
+        COLOR_RESET = config.getProperty("color_reset", "\u001B[0m");
 
-        } catch (IOException e) {
-            System.out.println("Could not load config.properties, using defaults.");
-        }
+        // Load messages
+        MSG_ADDED = config.getProperty("msg_added", "Added: %s");
+        MSG_REMOVED = config.getProperty("msg_removed", "Removed: %s");
+        MSG_DONE = config.getProperty("msg_done", "Marked done: %s");
+        MSG_INVALID_TASK_NUMBER = config.getProperty("msg_invalid_task_number", "Invalid task number");
+        MSG_NO_TASKS = config.getProperty("msg_no_tasks", "No tasks!");
+        MSG_ALL_REMOVED = config.getProperty("msg_all_removed", "All tasks have been removed!");
+        MSG_MISSING_TASK_DESC = config.getProperty("msg_missing_task_description", "Please provide a task description.");
+        MSG_MISSING_TASK_NUM = config.getProperty("msg_missing_task_number", "Please provide a task number.");
+
+    } catch (IOException | URISyntaxException e) {
+        System.out.println("Could not load config.properties, using defaults.");
     }
+}
+
 
     // =========================
     // Task class with colored boxes
